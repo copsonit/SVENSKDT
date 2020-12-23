@@ -159,7 +159,7 @@ get_nvm
 	trap	#14
 	lea	12(sp),sp
 	sf	firstGet
-	bra	get_nvm
+	bra	.get_nvm_again
 
 .allOK
 	lea	nvm,a0
