@@ -307,11 +307,29 @@ my_trap1	move.l	sp,a0
 	ble	.not_mine
 	move.l	d2,a4
 	move.l	magbase(a4),a5
-	move.l	magic1(a5),d0
-	cmp.l	-6(a6),d0	V†r rutin?
+	move.l	-6(a6),d0
+	cmp.l	$42e.w,d0		Under mtop blir i RAM
+	bcs	.iram1
+	cmp.l	#$e7ffff,d0		Inte ”ver ROM!
+	bcc	.not
+	cmp.l	#$e00000,d0		Och inte under heller!
+	bcs	.not
+.iram1
+	move.l	d0,a0
+	cmp.l	#$5c4f4a80,(a0)	R„tt malloc?
 	bne	.not
-	move.l	magic2(a5),d0
-	cmp.l	6(a6),d0
+	move.l	6(a6),d0
+	cmp.l	$42e.w,d0		Ogiltig adress
+	bcs	.iram2
+	cmp.l	#$ffffff,d0
+	bcc	.not
+	cmp.l	#$e00000,d0
+	bcs	.not
+.iram2
+	move.l	d0,modmag2(a4)
+	exg	d0,a0
+	sub.l	a0,d0		Ber„kna offset
+	cmp.l	magic8(a5),d0	R„tt offset?
 	bne	.not
 	bchg	#0,first(a4)
 	bne	.not
@@ -364,8 +382,8 @@ my_trap1	move.l	sp,a0
 owncont
 	move.l	#ownid,d0
 	jsr	get_cookie(pc)	OBS! F”ruts„tter att den finns!
-	move.l	d2,a5
-	move.l	magbase(a5),a5	
+	move.l	d2,a4
+	move.l	magbase(a4),a5	
 	move.l	magic7(a5),a0
 	move.l	2(a0),a0
 	move	(a0),a0
@@ -373,7 +391,7 @@ owncont
 	add.l	a0,a0
 	add.l	d2,a0
 	lea	ownrsctab(a0),a0
-	move.l	magic2(a5),a1
+	move.l	modmag2(a4),a1
 	jmp	-$1e(a1)
 
 
@@ -383,6 +401,7 @@ magic1	rs.l	1
 magic2	rs.l	1
 magic3	rs.l	1
 magic7	rs.l	1
+magic8	rs.l	1
 magverstr	rs.b	4
 maglen	rs.b	0
 
@@ -395,24 +414,28 @@ TOSDATA
 	dc.l	$e25a0a	;2
 	dc.l	$e4b7ea	;3
 	dc.l	$e259dc	;7
+	dc.l	$c37c	;8
 	dc.b	"4.00"
 	dc	$401	TOS 4.01	OBS! KOLLAS! (REN CHANS...)
 	dc.l	$e31d86	;FEL!
 	dc.l	$e25a0a	;FEL!
 	dc.l	$e4b806	;FEL!
 	dc.l	$e259dc	;FEL!
+	dc.l	$c37c	;FEL!
 	dc.b	"4.01"
 	dc	$402	TOS 4.02	OK! KOLLAS!
 	dc.l	$e349c6	; 1
 	dc.l	$e275c4	; 2
 	dc.l	$e509c6	; 3
 	dc.l	$e27596	; 7
+	dc.l	$d402	; 8
 	dc.b	"4.02"
 	dc	$404	TOS 4.04	OK!
 	dc.l	$e34a26	; 1
 	dc.l	$e27624	; 2
 	dc.l	$e50a26	; 3
 	dc.l	$e275f6	; 7
+	dc.l	$d402	; 8
 	dc.b	"4.04"
 	dc	-1		End mark
 
@@ -440,6 +463,7 @@ ownrsc	incbin	404swe.bin
 
 	rsreset
 magbase	rs.l	1
+modmag2	rs.l	1
 ownrsctab	rs.l	7
 	IFD	CART
 o_trap1	rs.l	1
