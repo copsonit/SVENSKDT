@@ -35,31 +35,21 @@
 	; 11.00-	AnvÑnder XBRA och behîver inte lÑngre ligga sist (om de
 	;	efterfîljande programmen fîljer XBRA vill sÑga!)
 	; -12.43	PC-relativt, fîrberett fîr cartridgeassemblering
+	; 940130:    Anpassning till TOS 4.02
 
 	; Att gîra:	 Kolla om programmet redan Ñr installerat.
 	;	 Installera inte dÜ MultiTOS kîrs
 	;	  Anpassning till fler TOS Behîver fler TOS.IMG!!!
 	;	 Ska utnyttja XBRA fîr att inte behîva ligga sist...
 	;	 Gîr en universal version som kan lÑggas pÜ cart!
-
+	;	  Kolla om det inte gÜr att lÑnka in smartare, innan AKP
+	;	  och sedan i tabellen lÑggs adress in fîr AKP nr 6...
+	;	  Gîr sedan en egen NVRAM-configger med alla nya sprÜk i
 
 *CART
 
 	IFD	CART
 *	org	$FA0000
-ROMSTART
-	dc.l	$ABCDEF42
-	dc.l	0		; Pekare till nÑsta program
-	dc.l	$8000000+MAIN	; Intierings sekvens fîre Disk-Boot
-	dc.l	ROMONSTART		; Start pÜ programmet ROMON.PRG
-time1	equ	RAMSTART+*-ROMSTART
-	dc	$7885
-date1	equ	RAMSTART+*-ROMSTART
-	dc	$1762
-	dc.l	ROMONSLUT-ROMONSTART
-	dc.b	"ROMPè.PRG",$0
-	even
-
 	ELSEIF
 	output	c:\auto\svenska.prg
 	ENDC
@@ -329,16 +319,16 @@ my_trap1	move.l	sp,a0
 	bra	.xbraigen
 .hittad
 	IFD	CART
-	move.l	o_trap1(a5),-4(a0)
+*	move.l	o_trap1(a5),-4(a0)
 	ELSEIF
-	move.l	o_trap1(pc),-4(a0)
+*	move.l	o_trap1(pc),-4(a0)
 	ENDC
 	bra	.not
 .bruten
 	IFD	CART
-	move.l	o_trap1(a5),$84.w	StÑng av mig nu...
+*	move.l	o_trap1(a5),$84.w	StÑng av mig nu...
 	ELSEIF
-	move.l	o_trap1(pc),$84.w	StÑng av mig nu...
+*	move.l	o_trap1(pc),$84.w	StÑng av mig nu...
 	ENDC
 .not
 	movem.l	(sp)+,reglist
@@ -422,11 +412,11 @@ TOSDATA
 	dc.l	$9120
 	dc.l	$a4f9
 	dc.b	"4.01"
-	dc	$402	TOS 4.02	OBS! KOLLAS! (REN CHANS...)
-	dc.l	$e34a26
-	dc.l	$e27624
-	dc.l	$e2762e
-	dc.l	$e2768c
+	dc	$402	TOS 4.02	OK! KOLLAS!
+	dc.l	$e349c6
+	dc.l	$e275c4
+	dc.l	$e275ce
+	dc.l	$e2762c
 	dc.l	$9120
 	dc.l	$a386
 	dc.b	"4.02"
