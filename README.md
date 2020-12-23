@@ -12,3 +12,12 @@ of the software.
 The repo will try to recreate the development cycle as well as the commits should
 be in the order the files were originally created by changing the last file
 number and thus keeping a history of the files.
+
+Details about the source
+------------------------
+
+The original files were kept in the structure D:\GEN_MON\F030\TOS_SWED and
+D:\GEN_MON\F030\SET_NVM. These subdirectories exists here both under the
+SVENSKDT repo. In the source files it probably refers to the absolute paths
+so they have to be adjusted to be able to recompile everything again.
+
