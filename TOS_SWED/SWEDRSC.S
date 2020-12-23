@@ -55,6 +55,7 @@
 	ENDC
 ownid	equ	"CDST"	Copson DATA Svenskt TOS
 
+	include	objects.s
 MAIN
 *	IFND	CART
 	move.l	4(a7),a3		base page
@@ -77,6 +78,11 @@ MAIN
 	tst.l	d0
 	beq	.quit
 	move.l	d0,a6
+	move.l	d0,a0
+	move	#bsslen-1,d0
+.nxt
+	clr.b	(a0)+
+	dbf	d0,.nxt	
 	pea	super(pc)
 	move	#$26,-(sp)
 	trap	#14
@@ -128,6 +134,92 @@ MAIN
 *	rts
 *	ENDC
 
+fix_3dbutts
+	lea	ownrsc(pc),a5
+	lea	10(a5),a5
+	jsr	.fixrsc(pc)
+	lea	ownrsc(pc),a5
+	add	(a5),a5
+.fixrsc
+	move	rsh_trindex(a5),d6
+	move	rsh_ntree(a5),d7
+	subq	#1,d7	
+.nxttree
+	move.l	a5,a0
+	add.l	(a5,d6),a0
+	pea	0(a0)
+	move	ob_head(a0),-(sp)
+	move	ob_next(a0),-(sp)
+	jsr	.fix_type(pc)
+	addq	#8,sp
+	addq	#4,d6
+	dbf	d7,.nxttree
+	rts
+
+.fix_type		; 4(sp)=parent
+		; 6(sp)=obj
+		; 8(sp)=tree
+	move	6(sp),d0		; d0=obj
+	move.l	8(sp),a3
+	move	4(sp),d2		; d2=parent
+.while	
+	cmp	d0,d2
+	beq	.end
+	move	d0,d1
+	mulu	#ob_sizeof,d1
+
+
+	move	ob_flags(a3,d1),d5
+	move	d5,d4
+	and	#%11000000000,d4
+	lsr	#8,d4		
+	lsr	#1,d4		
+	cmp	#1,d4
+	bne	.noind
+	or	#$0100,ob_type(a3,d1)
+	bra	.noact
+.noind
+*	cmp	#2,d4
+*	bne	.noback
+*	cmp	#G_BOXCHAR,ob_type(a3,d1)
+*	bne	.noback
+*.okobj
+*	or	#$0200,ob_type(a3,d1)
+*	bra	.noact
+*.noback	
+	cmp	#3,d4
+	bne	.noact
+	cmp	#G_BOXCHAR,ob_type(a3,d1)
+	bne	.nobox
+	move.l	ob_spec(a3,d1),d5
+	and.l	#$FF000000,d5
+	or.l	#%00000000000000011001000101111000,d5
+	move.l	d5,ob_spec(a3,d1)
+.nobox
+	or	#$0200,ob_type(a3,d1)
+.noact
+	cmp	#-1,ob_head(a3,d1)
+	beq	.sluta
+	
+	move	d2,-(sp)
+	move	d1,-(sp)
+	pea	0(a3)		; tree
+	move	ob_head(a3,d1),-(sp)
+	move	d0,-(sp)
+	jsr	.fix_type(pc)
+	addq	#8,sp
+	move	(sp)+,d1
+	move	(sp)+,d2
+.sluta
+	move	ob_next(a3,d1),d0
+	move	d0,d1
+	mulu	#ob_sizeof,d1
+	bra	.while
+.end	
+	rts
+
+
+
 get_cookie
 	move.l	$5a0.w,d1
 	beq	.nf
@@ -157,6 +249,8 @@ super
 	spl	norom(a6)
 	bpl	.exit
 	move.l	$4f2.w,a0		_sysbase
+	cmp	#$401,2(a0)
+	sle	fixrsc(a6)
 	lea	tosdata(pc),a1
 .letanext
 	move	tosversion(a1),d0
@@ -209,6 +303,9 @@ super
 	dbf	d0,.nxttab
 	lea	ownrsc(pc),a0
 	move.l	a0,6*4(a3)		; SWE „r cookienr 6
+	tst.b	fixrsc(a6)
+	beq	.exit
+	jsr	fix_3dbutts(pc)
 .exit
 	rts
 
@@ -315,6 +412,7 @@ my_trap1	move.l	sp,a0
 	cmp.l	#$e00000,d0		Och inte under heller!
 	bcs	.not
 .iram1
+	illegal
 	move.l	d0,a0
 	cmp.l	#$5c4f4a80,(a0)	R„tt malloc?
 	bne	.not
@@ -467,6 +565,7 @@ stflg	rs.b	1
 installerad	rs.b	1
 norom	rs.b	1
 first	rs.b	1
+fixrsc	rs.b	1
 tosver	rs.b	4+2+1
 bsslen	rs.b	1
 	end
