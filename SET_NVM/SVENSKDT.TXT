@@ -1,0 +1,87 @@
+SVENSKDT - Svensk Desktop v1.0
+------------------------------
+
+Detta program installerar en svensk desktop p† Falcon030 med TOS 4.00, 4.01,
+4.02 eller 4.04.
+
+G”r s† h„r f”r att installera programmet p† din Falcon:
+
+1. Starta programmet SVENSKDT.PRG.
+
+2. Du f†r d† upp programmets dialogruta.
+
+3. Tryck p† knappen "Svenska" till h”ger om texten "Snabbval".
+
+4. Tryck p† knappen "Installera".
+
+Programmet kontrollerar nu om du har programmet SVENSKA.PRG i din AUTO-mapp.
+Om du inte har det f†r du v„lja att l†ta programmet kopiera in det †t dig.
+Du m†ste ha detta program i din AUTO-mapp f”r att du ska f† svensk desktop
+i din Falcon. Tangentbordet kan st„llas om till svenskt utan att SVENSKA.PRG
+beh”ver ligga i AUTO-mappen.
+
+N„r allt „r klart †terv„nder programmet till desktop. Du m†ste nu starta om
+datorn f”r att aktivera „ndringarna. Det g”r du genom att samtidigt trycka
+ned Control, Alternate och Delete eller trycka in knappen "Reset" p† datorns
+baksida.
+
+™vriga funktioner i programmet
+------------------------------
+
+F”rutom de b†da snabbvalstangenterna f”r svenska och engelska, kan programmet
+st„lla in alla parametrar som har med TOSets spr†k att g”ra.
+
+Desktop: H„r v„ljs spr†k f”r desktop. I Falcons TOS 4.00 till och med 4.04
+finns spr†ken Engelska, Tyska, Franska, Italienska och Spanska inlagt.
+Om n†got av de ”vriga spr†ken v„ljs s† kommer programmet att st„lla in
+detta spr†k, men om ingen desktop existerar i TOS f”r det aktuella spr†ket,
+anv„nds alltid engelsk desktop.
+
+Tangentbord: H„r v„ljer du vilken tangentbordsupps„ttning som Falcon ska
+anv„nda. De tangentbordsupps„ttningar i TOS 4.00 till 4.04 „r engelska, tyska,
+franska, italienska, spanska, svenska, schweiziskt-franskt och schweiziskt-
+tyskt. Om n†got av de ”vriga spr†ken v„ljs s† kommer programmet att st„lla
+in detta spr†k, men om ingen tangentbordsupps„ttning existerar i TOS f”r det
+aktuella spr†ket, anv„nds alltid engelsk tangentbordsupps„ttning.
+
+Tid: H„r kan du st„lla in om Falcon ska visa tiden med 12-eller 24-timmars ur.
+Information f”r detta anv„nds bland annat i desktops filf”nster.
+
+Datum: H„r st„ller du in hur Falcon ska visa datum. I Sverige anv„nder vi
+standarden R-MNAD-DAG, dvs den 1 November 1994 visas som 94-11-01.
+Denna information anv„nds bland annat i desktops filf”nster.
+
+Skiljetecken: H„r anger du vilket tecken som R, MNAD och DAG ska separeras
+med. Godtyckligt ASCII-tecken kan anv„ndas. I Sverige anv„nds ett minustecken
+(eller bindestreck) som skiljetecken mellan †r, m†nad och dag. Denna
+information anv„nds bland annat i desktops filf”nster.
+
+Om programmet
+-------------
+
+SVENSKDT.PRG kan installeras som en ACCessory-fil genom att d”pa om det till
+SVENSKDT.ACC.
+
+D† en parameter „ndras modifieras samtidigt v„rdet i _AKP och _IDT-cookie
+vilket inneb„r att det r„cker med att byta uppl”sning f”r att aktivera
+inst„llningarna. Detta g„ller bara desktop, tid, datumvisning och
+datumavskiljare. F”r att st„lla om tangentbordsupps„ttningen m†ste datorn
+†terstartas. P† monokrommonitor g†r det inte att „ndra uppl”sning, s† d„r
+m†ste datorn alltid †terstartas f”r att aktivera „ndringarna.
+
+SVENSKA.PRG kan oftast startas p† godtyckligt st„lle i AUTO-mappen, men
+d† program anv„nds som modifierar systemet och flyttar TOS till RAM-minnet,
+som t ex GEMRAM, VRAM030 eller ROMRAM, s† m†ste SVENSKA.PRG alltid startas
+efter dessa program. Anv„nd funktionen "Ingen sortering" i desktop f”r att
+visa vilken ordning filerna i AUTO-mappen befinner sig i.
+
+Copson DATA innehar alla r„ttigheter till programmen SVENSKDT.PRG och
+SVENSKA.PRG. Atari Corporation innehar alla r„ttigheter f”r Desktop.
+Desktop „r ”versatt av Copson DATA.
+
+Copson DATA
+Hovetorpsgatan 66
+582 64  Link”ping
+Sverige
+
+Tel/Fax 013-164104
