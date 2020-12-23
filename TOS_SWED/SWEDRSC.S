@@ -167,10 +167,15 @@ super
 	lea	maglen(a1),a1
 	bra	.letanext
 .found
-	move.l	magic6(a1),a0
-	tst.l	(a0)		Redan installerad?
-	sne	installerad(a6)
-	bne	.exit
+	move.l	#ownid,d0
+	jsr	get_cookie(pc)
+	spl	installerad(a6)
+	bpl	.exit
+*	move.l	magic2(a1),a0
+*	move.l	2(a0),a0
+*	tst.l	(a0)		Redan installerad?
+*	sne	installerad(a6)
+*	bne	.exit
 	move.l	a6,d1		L„gg in basadress i cookie
 	move.l	#ownid,d0
 	jsr	insert_cookie(pc)
@@ -195,6 +200,15 @@ super
 	move.b	#$0d,(a2)+
 	move.b	#$0a,(a2)+
 	clr.b	(a2)+
+	lea	ownrsctab(a6),a0
+	move.l	magic3(a1),a2
+	move.l	a0,a3
+	moveq	#5,d0
+.nxttab
+	move.l	(a2)+,(a0)+
+	dbf	d0,.nxttab
+	lea	ownrsc(pc),a0
+	move.l	a0,6*4(a3)		; SWE „r cookienr 6
 .exit
 	rts
 
@@ -291,18 +305,17 @@ my_trap1	move.l	sp,a0
 	move.l	#ownid,d0
 	jsr	get_cookie(pc)
 	ble	.not_mine
-	move.l	d2,a5
-	move.l	magbase(a5),a5
+	move.l	d2,a4
+	move.l	magbase(a4),a5
 	move.l	magic1(a5),d0
 	cmp.l	-6(a6),d0	V†r rutin?
 	bne	.not
 	move.l	magic2(a5),d0
 	cmp.l	6(a6),d0
 	bne	.not
-	moveq	#0,d0
-	move	ownrsc+4(pc),d0
-	move.l	d0,2(a6)		Modifiera minne som ska mallokeras till
-				;aktuellt minne fr†n egen rsc-fil
+	bchg	#0,first(a4)
+	bne	.not
+	move.l	#-1,2(a6)		; Returnera ledigt minne t ex...
 	lea	owncont(pc),a0
 	move.l	a0,6(a6)	L„nka in mig i returnadress efter malloc...
 	move.l	$84.w,a0
@@ -349,46 +362,27 @@ my_trap1	move.l	sp,a0
 	ENDC
 	rts
 owncont
-	move.l	d0,-(sp)
 	move.l	#ownid,d0
 	jsr	get_cookie(pc)	OBS! F”ruts„tter att den finns!
 	move.l	d2,a5
 	move.l	magbase(a5),a5	
-	move.l	(sp)+,d0
-*	tst.l	d0
-	bne	.x
-	move.l	magic3(a5),a0
-	jmp	(a0)
-.x
-*	move.l	d0,-(sp)		Sl„pp genast reservat minne (!)
-*	move	#$49,-(sp)
-*	trap	#1
-*	addq	#6,sp
-	
-	lea	ownrsc(pc),a0
-	move.l	d0,a1
-	move	4(a0),d1
-	subq	#1,d1
-.nxtbyte
-	move.b	(a0)+,(a1)+
-	dbf	d1,.nxtbyte
-*	move.l	#ownrsc,d0		H„r ligger ju redan v†r RSC-fil :-)
-	move.l	magic5(a5),a0
-	move.l	d0,(a0)		Patcha in v†r egen RSC-fil
-	move.l	magic6(a5),a0
-	move.l	d0,(a0)		H„r ligger RSC-filen i RAM
+	move.l	magic7(a5),a0
+	move.l	2(a0),a0
+	move	(a0),a0
+	add.l	a0,a0
+	add.l	a0,a0
+	add.l	d2,a0
+	lea	ownrsctab(a0),a0
+	move.l	magic2(a5),a1
+	jmp	-$1e(a1)
 
-	move.l	magic4(a5),a0
-	jmp	(a0)
 
 	rsreset
 tosversion	rs	1
 magic1	rs.l	1
 magic2	rs.l	1
 magic3	rs.l	1
-magic4	rs.l	1
-magic5	rs.l	1
-magic6	rs.l	1
+magic7	rs.l	1
 magverstr	rs.b	4
 maglen	rs.b	0
 
@@ -397,42 +391,34 @@ maglen	rs.b	0
 
 TOSDATA
 	dc	$400	TOS 4.00	OBS! KOLLAS! (EJ TESTAT...)
-	dc.l	$e31d86
-	dc.l	$e25a0a
-	dc.l	$e25a14
-	dc.l	$e25a72
-	dc.l	$9120
-	dc.l	$a4f9
+	dc.l	$e31d86	;1
+	dc.l	$e25a0a	;2
+	dc.l	$e4b7ea	;3
+	dc.l	$e259dc	;7
 	dc.b	"4.00"
 	dc	$401	TOS 4.01	OBS! KOLLAS! (REN CHANS...)
-	dc.l	$e31d86
-	dc.l	$e25a0a
-	dc.l	$e25a14
-	dc.l	$e25a72
-	dc.l	$9120
-	dc.l	$a4f9
+	dc.l	$e31d86	;FEL!
+	dc.l	$e25a0a	;FEL!
+	dc.l	$e4b806	;FEL!
+	dc.l	$e259dc	;FEL!
 	dc.b	"4.01"
 	dc	$402	TOS 4.02	OK! KOLLAS!
-	dc.l	$e349c6
-	dc.l	$e275c4
-	dc.l	$e275ce
-	dc.l	$e2762c
-	dc.l	$9120
-	dc.l	$a386
+	dc.l	$e349c6	; 1
+	dc.l	$e275c4	; 2
+	dc.l	$e509c6	; 3
+	dc.l	$e27596	; 7
 	dc.b	"4.02"
 	dc	$404	TOS 4.04	OK!
-	dc.l	$e34a26
-	dc.l	$e27624
-	dc.l	$e2762e
-	dc.l	$e2768c
-	dc.l	$9120
-	dc.l	$a386
+	dc.l	$e34a26	; 1
+	dc.l	$e27624	; 2
+	dc.l	$e50a26	; 3
+	dc.l	$e275f6	; 7
 	dc.b	"4.04"
 	dc	-1		End mark
 
 message	dc.b	$0d,$0a
 	dc.b	27,"p"
-	dc.b	"        Svensk Desktop v0.91á        ",27,"q",$0d,$0a
+	dc.b	"        Svensk Desktop v0.96á        ",27,"q",$0d,$0a
 	dc.b	"½ 1994 Conny Pettersson, Copson DATA",$0d,$0a
 	dc.b	"Distribut”r: AdAstra Electronics AB",$0d,$0a
 	dc.b	$0d,$0a
@@ -454,12 +440,14 @@ ownrsc	incbin	404swe.bin
 
 	rsreset
 magbase	rs.l	1
+ownrsctab	rs.l	7
 	IFD	CART
 o_trap1	rs.l	1
 	ENDC
 stflg	rs.b	1
 installerad	rs.b	1
 norom	rs.b	1
+first	rs.b	1
 tosver	rs.b	4+2+1
 bsslen	rs.b	1
 	end
