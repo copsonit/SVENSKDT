@@ -1,0 +1,37 @@
+SVENSKA.PRG version 0.96á
+-------------------------
+
+Detta program installerar svensk desktop p† Falcon med TOS-version
+4.00, 4.02 och 4.04.
+
+
+Installera programmet s† h„r:
+-----------------------------
+
+1. Kopiera SVENSKA.PRG till AUTO-mappen p† din C:-partition. Om du
+   inte har h†rddisk ska du kopiera programmet till AUTO-mappen p† din
+   bootdiskett.
+
+2. Starta programmet SETSWED.PRG f”r att st„lla om tangentbord och
+   desktop till svenskt spr†k. (OBS! SETSWED.PRG m†ste vara av version
+   1.2 eller nyare f”r att „ven desktop ska st„llas om till svenska.
+   Den senaste versionen av programmet bifogas denna diskett.)
+
+3. Boota om datorn genom att trycka in Resetknappen p† datorns baksida
+   eller genom att samtidigt trycka ned tangenterna Control, Alternate
+   och Delete.
+
+Om du gjort allt riktigt ska du nu f† upp svensk desktop p† sk„rmen.
+I alla program kommer du att f† svensk tangentbordslayout.
+
+Det g†r „ven att starta SVENSKA.PRG direkt fr†n desktop, om du k”r p†
+VGA-monitor eller TV, men du m†ste d† byta uppl”sning f”r att den svenska
+desktopen ska startas. Detta fungerar inte p† monokromsk„rm, eftersom
+det d„r inte finns n†gra andra uppl”sningar att byta till. Programmet
+m†ste d† k”ras fr†n AUTO-mappen f”r att svensk desktop ska kunna
+installeras.
+
+Conny Pettersson
+Copson DATA
+
+Tel/Fax 013-164104
