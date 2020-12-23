@@ -397,7 +397,6 @@ owncont
 
 	rsreset
 tosversion	rs	1
-magic1	rs.l	1
 magic2	rs.l	1
 magic3	rs.l	1
 magic7	rs.l	1
@@ -410,38 +409,34 @@ maglen	rs.b	0
 
 TOSDATA
 	dc	$400	TOS 4.00	OBS! KOLLAS! (EJ TESTAT...)
-	dc.l	$e31d86	;1
 	dc.l	$e25a0a	;2
 	dc.l	$e4b7ea	;3
 	dc.l	$e259dc	;7
-	dc.l	$c37c	;8
+	dc.l	$e31d86-$e25a0a	;#
 	dc.b	"4.00"
 	dc	$401	TOS 4.01	OBS! KOLLAS! (REN CHANS...)
-	dc.l	$e31d86	;FEL!
-	dc.l	$e25a0a	;FEL!
-	dc.l	$e4b806	;FEL!
-	dc.l	$e259dc	;FEL!
-	dc.l	$c37c	;FEL!
+	dc.l	$e25d24	;2
+	dc.l	$e4c84c	;3
+	dc.l	$e25cf6	;7
+	dc.l	$e32bf2-$e25d24	;8
 	dc.b	"4.01"
 	dc	$402	TOS 4.02	OK! KOLLAS!
-	dc.l	$e349c6	; 1
 	dc.l	$e275c4	; 2
 	dc.l	$e509c6	; 3
 	dc.l	$e27596	; 7
-	dc.l	$d402	; 8
+	dc.l	$e349c6-$e275c4	; 8
 	dc.b	"4.02"
 	dc	$404	TOS 4.04	OK!
-	dc.l	$e34a26	; 1
 	dc.l	$e27624	; 2
 	dc.l	$e50a26	; 3
 	dc.l	$e275f6	; 7
-	dc.l	$d402	; 8
+	dc.l	$e34a26-$e27624	; 8
 	dc.b	"4.04"
 	dc	-1		End mark
 
 message	dc.b	$0d,$0a
 	dc.b	27,"p"
-	dc.b	"        Svensk Desktop v0.96á        ",27,"q",$0d,$0a
+	dc.b	"        Svensk Desktop v0.98á        ",27,"q",$0d,$0a
 	dc.b	"½ 1994 Conny Pettersson, Copson DATA",$0d,$0a
 	dc.b	"Distribut”r: AdAstra Electronics AB",$0d,$0a
 	dc.b	$0d,$0a
