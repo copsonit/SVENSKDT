@@ -39,12 +39,21 @@
 
 	; Att g”ra:	 Kolla om programmet redan „r installerat.
 	;	 Installera inte d† MultiTOS k”rs
-	;	  Anpassning till fler TOS Beh”ver fler TOS.IMG!!!
+	;	 Anpassning till fler TOS Beh”ver fler TOS.IMG!!!
 	;	 Ska utnyttja XBRA f”r att inte beh”va ligga sist...
 	;	 G”r en universal version som kan l„ggas p† cart!
-	;	  Kolla om det inte g†r att l„nka in smartare, innan AKP
+	;	 Kolla om det inte g†r att l„nka in smartare, innan AKP
 	;	  och sedan i tabellen l„ggs adress in f”r AKP nr 6...
-	;	  G”r sedan en egen NVRAM-configger med alla nya spr†k i
+	;	 G”r sedan en egen NVRAM-configger med alla nya spr†k i
+	;	 G”r s† det funkar med GEMRAM, ROMRAM, VRAM och ROMSPEED.
+	;	 Om dylika program anv„nds patchas adress till rsc-tabell 
+	;	  direkt in i koden p† offset magic9.
+	;	 3D-knappar ska „ndras fr†n ob_flags till extended object
+	;	  f”r TOS 4.00/4.01
+	;	 Ska „ven funka med WINX!
+	;	  Kolla upp med Martin Osieka om omskrivning till TKR „r m”jlig...?
+		
+
 
 *CART
 
@@ -53,7 +62,7 @@
 	ELSEIF
 	output	c:\auto\svenska.prg
 	ENDC
-ownid	equ	"CDST"	Copson DATA Svenskt TOS
+ownid	equ	"CDSW"	Copson DATA Swedish TOS
 
 	include	objects.s
 MAIN
@@ -265,16 +274,32 @@ super
 	jsr	get_cookie(pc)
 	spl	installerad(a6)
 	bpl	.exit
-*	move.l	magic2(a1),a0
-*	move.l	2(a0),a0
-*	tst.l	(a0)		Redan installerad?
-*	sne	installerad(a6)
-*	bne	.exit
-	move.l	a6,d1		L„gg in basadress i cookie
-	move.l	#ownid,d0
-	jsr	insert_cookie(pc)
-	slt	stflg(a6)
-	blt	.exit
+	move.l	#"MOGR",d0		; GEMRAM?
+	jsr	get_cookie(pc)
+	bpl	.rominram
+	move.l	#"VRAM",d0		; VRAM?
+	jsr	get_cookie(pc)
+	bpl	.rominram
+	move.l	#"USRS",d0		; ROMSPEED?
+	jsr	get_cookie(pc)
+	bpl	.rominram
+	move.l	#"PTOS",d0		; ROMRAM?
+	jsr	get_cookie(pc)
+	bmi	.notinram
+.rominram
+	move.l	$4f2.w,a0
+	move.l	$14(a0),a0
+	cmp.l	#$87654321,(a0)
+	bne	.notinram
+	move.l	8(a0),d0
+	cmp.l	$42e.w,d0		Under mtop blir i RAM
+	bcc	.notinram
+	move.l	d0,a0
+	add.l	magic9(a1),a0
+	lea	ownrsctab(a6),a2
+	move.l	a2,(a0)
+	bra	.tosinramcont
+.notinram
 	
 	IFD	CART
 	lea	o_trap1(a6),a0
@@ -284,13 +309,27 @@ super
 	move.l	$84.w,(a0)
 	lea	my_trap1(pc),a0
 	move.l	a0,$84.w
+.tosinramcont
+	move.l	a6,d1		L„gg in basadress i cookie
+	move.l	#ownid,d0
+	jsr	insert_cookie(pc)
+	slt	stflg(a6)
+	blt	.exit
 	move.l	a1,magbase(a6)
-	moveq	#3,d0
-	lea	magverstr(a1),a0
+
+	lea	tosversion(a1),a0
 	lea	tosver(a6),a2
-.movestr
-	move.b	(a0)+,(a2)+
-	dbf	d0,.movestr
+	move	(a0),d0
+	rol	#4,d0
+	jsr	.makenum(pc)
+	move.b	#".",(a2)+
+	jsr	.makenum(pc)
+	jsr	.makenum(pc)
+*	moveq	#3,d0
+*	lea	magverstr(a1),a0
+*.movestr
+*	move.b	(a0)+,(a2)+
+*	dbf	d0,.movestr
 	move.b	#$0d,(a2)+
 	move.b	#$0a,(a2)+
 	clr.b	(a2)+
@@ -307,6 +346,13 @@ super
 	beq	.exit
 	jsr	fix_3dbutts(pc)
 .exit
+	rts
+.makenum
+	rol	#4,d0
+	move	d0,d2
+	and	#$F,d2
+	add.b	#"0",d2
+	move.b	d2,(a2)+
 	rts
 
 ;eigenen Cookie in das Cookie jar
@@ -412,7 +458,6 @@ my_trap1	move.l	sp,a0
 	cmp.l	#$e00000,d0		Och inte under heller!
 	bcs	.not
 .iram1
-	illegal
 	move.l	d0,a0
 	cmp.l	#$5c4f4a80,(a0)	R„tt malloc?
 	bne	.not
@@ -499,7 +544,7 @@ magic2	rs.l	1
 magic3	rs.l	1
 magic7	rs.l	1
 magic8	rs.l	1
-magverstr	rs.b	4
+magic9	rs.l	1
 maglen	rs.b	0
 
 
@@ -511,30 +556,30 @@ TOSDATA
 	dc.l	$e4b7ea	;3
 	dc.l	$e259dc	;7
 	dc.l	$e31d86-$e25a0a	;#
-	dc.b	"4.00"
-	dc	$401	TOS 4.01	OBS! KOLLAS! (REN CHANS...)
+	dc.l	$8004	;9
+	dc	$401	TOS 4.01	OK!
 	dc.l	$e25d24	;2
 	dc.l	$e4c84c	;3
 	dc.l	$e25cf6	;7
 	dc.l	$e32bf2-$e25d24	;8
-	dc.b	"4.01"
+	dc.l	$81fe	;9
 	dc	$402	TOS 4.02	OK! KOLLAS!
 	dc.l	$e275c4	; 2
 	dc.l	$e509c6	; 3
 	dc.l	$e27596	; 7
 	dc.l	$e349c6-$e275c4	; 8
-	dc.b	"4.02"
+	dc.l	$8278	; 9
 	dc	$404	TOS 4.04	OK!
 	dc.l	$e27624	; 2
 	dc.l	$e50a26	; 3
 	dc.l	$e275f6	; 7
 	dc.l	$e34a26-$e27624	; 8
-	dc.b	"4.04"
+	dc.l	$8278	; 9
 	dc	-1		End mark
 
 message	dc.b	$0d,$0a
 	dc.b	27,"p"
-	dc.b	"        Svensk Desktop v0.98á        ",27,"q",$0d,$0a
+	dc.b	"        Svensk Desktop v1.0        ",27,"q",$0d,$0a
 	dc.b	"½ 1994 Conny Pettersson, Copson DATA",$0d,$0a
 	dc.b	"Distribut”r: AdAstra Electronics AB",$0d,$0a
 	dc.b	$0d,$0a
@@ -557,7 +602,7 @@ ownrsc	incbin	404swe.bin
 	rsreset
 magbase	rs.l	1
 modmag2	rs.l	1
-ownrsctab	rs.l	7
+ownrsctab	rs.l	16	; Reservera f”r 16 spr†k
 	IFD	CART
 o_trap1	rs.l	1
 	ENDC
