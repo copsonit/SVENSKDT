@@ -1,0 +1,3 @@
+cd d:\gen_mon\f030\set_nvm
+c:\bin\rsc2src set_nvm.rsc set_nrsc.s
+c:\bin\h2sconv set_nvm.h set_nh.s
