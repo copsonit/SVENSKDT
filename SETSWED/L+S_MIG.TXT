@@ -1,0 +1,67 @@
+SetSwed v1.2 av Copson DATA
+---------------------------
+
+Detta lilla program st„ller in Falcon030 till svenskt spr†k. Programmet
+beh”ver bara k”ras en g†ng, eftersom inst„llningarna lagras i datorns
+RAM med batteribackup.
+
+
+Installera programmet s† h„r:
+-----------------------------
+
+1. Starta programmet SETSWED.PRG fr†n diskett eller h†rddisk.
+
+2. Boota om datorn genom att trycka in Resetknappen p† datorns baksida
+   eller genom att samtidigt trycka ned tangenterna Control, Alternate
+   och Delete.
+
+Om du gjort allt riktigt ska du nu f† svenskt tangentbord i alla program.
+F”r att f† svensk desktop m†ste du installera programmet SVENSKA.PRG, se
+separat dokumentation f”r SVENSKA.PRG.
+
+Du kan byta tillbaks till engelskt tangentbord genom att k”ra programmet
+SETENG.PRG.
+
+Hur det fungerar
+----------------
+
+Programmet utnyttjar det odokumenterade faktum att TOS 4.01 - 4.04
+inneh†ller en svensk tangentbordslayout. Genom detta r„cker det med
+att st„lla om en variabel i realtidsklockans statiska RAM-minne med
+batteribackup, vilket „r precis vad SetSwed g”r. Man kommer d„rf”r
+ifr†n att beh”va l„gga in ett program i AUTO-mappen som m†ste startas
+varje g†ng man bootar om, och som dels tar extra minne och dels l„nkar
+in sig p† systemvektorer vilket kan orsaka inkompatibilitetsproblem.
+
+Falcons TOS „r ocks† f”rberett f”r svenskt TOS, men f”r att f† den
+svenska desktopen m†ste det externa programmet SVENSKA.PRG startas
+i AUTO-mappen. Se separat dokumentation ang†ende detta.
+
+
+Nytt i v1.2
+-----------
+
+Om Falcons NV-RAM av n†gon anledning blivit otill†tet skrivet till s†
+att den interna checksumman inte st„mmer, kommer programmet att
+†terinitiera NV-RAM:et. Programmet meddelar detta p† sk„rmen d† det
+k”rs genom meddelandet "terinitierar NVRAM...". Efter detta b”r
+ett konfigurationsprogram f”r NVRAM k”ras f”r att st„lla in ”vriga
+parametrar f”r NVRAM. D„refter ska SETSWED.PRG k”ras igen f”r att
+st„lla in svenskt spr†k.
+
+Tillsammans med programmet SVENSKA.PRG kan ocks† en svensk desktop
+installeras.
+
+Programmet SETENG.PRG anv„nds f”r att st„lla tillbaka desktop och
+tangentbord till engelska.
+
+Programmet modifierar „ven v„rdet i _AKP-cookie vilket inneb„r att om
+programmet SETENG.PRG k”rs d† svensk desktop „r installerad, r„cker det
+med att byta uppl”sning f”r att byta till engelsk dekstop. Detsamma
+g„ller vid byte till svensk desktop d† programmet SETSWED.PRG k”rs. En
+f”ruts„ttning f”r att detta ska fungera „r naturligtvis att programmet
+SVENSKA.PRG „r installerat och startat i AUTO-mappen.
+
+Copson DATA
+Hovetorpsgatan 66
+582 64 Link”ping
