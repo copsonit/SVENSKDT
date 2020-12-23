@@ -1,4 +1,4 @@
-SVENSKDT - Svensk Desktop v1.0
+SVENSKDT - Svensk Desktop v1.1
 ------------------------------
 
 Detta program installerar en svensk desktop p† Falcon030 med TOS 4.00, 4.01,
@@ -74,6 +74,16 @@ d† program anv„nds som modifierar systemet och flyttar TOS till RAM-minnet,
 som t ex GEMRAM, VRAM030 eller ROMRAM, s† m†ste SVENSKA.PRG alltid startas
 efter dessa program. Anv„nd funktionen "Ingen sortering" i desktop f”r att
 visa vilken ordning filerna i AUTO-mappen befinner sig i.
+
+Žndringar
+---------
+
+v1.1: Om NV-RAM ej inneh†ller felaktig data s† †terst„ller nu SVENSKDT.PRG
+till defaultv„rden ist„llet f”r att f”rs”ka tolka v„rdena „nd†. Detta kunde
+tidigare leda till buserror (tv† bomber) i ogynnsamma l„gen. Om datat fort-
+farande „r felaktigt efter en †terst„llning, meddelar programmet att det
+m†ste vara fel p† NV-RAM. Tack till Mikael Hemmingsson f”r uppt„ckten av
+problemet.
 
 Copson DATA innehar alla r„ttigheter till programmen SVENSKDT.PRG och
 SVENSKA.PRG. Atari Corporation innehar alla r„ttigheter f”r Desktop.
